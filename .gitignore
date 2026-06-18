@@ -1,2 +1,3 @@
 Sysmon/*.exe
 Sysmon/*.txt
+alert.db
