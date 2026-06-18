@@ -1,8 +1,7 @@
 import psutil
-import time
-import datetime
+import time, datetime
 import json
-from database import initialize_database, log_process_event
+from database import initialize_database, log_event
 
 # Living of the Land Binaries
 with open("lolbins.json", "r") as f:
@@ -40,7 +39,7 @@ def generateAlert(process):
         f"{process['username']} at {readableTime}"
     )
 
-    log_process_event(
+    log_event(
         timestamp=readableTime,
         pid=process['pid'],
         ppid=process['ppid'],

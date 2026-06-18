@@ -8,18 +8,17 @@ def get_connection():
 def initialize_database():
     conn = get_connection()
     cursor = conn.cursor()
-
+    # Events table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS process_events (
+        CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT NOT NULL,
-            pid INTEGER,
-            ppid INTEGER,
-            process_name TEXT,
-            command_line TEXT,
-            username TEXT
+            event_record_id INTEGER,
+            event_id INTEGER,
+            timestamp TEXT,
+            hostname TEXT,
+            raw_XML TEXT
         )""")
-
+    # Alerts Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS alerts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,35 +28,33 @@ def initialize_database():
             description TEXT
         )""")
 
-def log_process_event(
+def log_event(
+        event_record_id,
+        event_id,
         timestamp,
-        pid,
-        ppid,
-        process_name,
-        command_line,
-        username
+        hostname,
+        xml
 ):
+    initialize_database()
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO process_events
+        INSERT INTO events
         (
+            event_record_id,
+            event_id,
             timestamp,
-            pid,
-            ppid,
-            process_name,
-            command_line,
-            username
+            hostname,
+            raw_XML
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
     """, (
+        event_record_id,
+        event_id,
         timestamp,
-        pid,
-        ppid,
-        process_name,
-        command_line,
-        username
+        hostname,
+        xml
     ))
 
     conn.commit()
